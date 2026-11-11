@@ -1,5 +1,19 @@
 # Pamonharia
 
+## Design e novas telas
+
+O [guia de design](docs/DESIGN.md) define cores, tipografia, componentes, modais, mensagens, acessibilidade e comportamento responsivo. Consulte-o antes de criar funções ou telas. Ele também contém capturas reais da interface e um checklist de revisão.
+
+## Clientes e recebimentos
+
+Em **Clientes**, cadastre nome, telefone, endereço de entrega e data de nascimento. Somente o nome é obrigatório. O detalhe mostra os produtos mais pedidos e o histórico com data, mesa e itens. Ao anotar um pedido pela equipe, selecione um cadastro; para pedidos existentes, use **Vincular cliente** na comanda. Nomes iguais nunca são associados automaticamente.
+
+Na comanda, **Receber / dividir** abre o total, o valor já pago e o saldo. A calculadora divide o saldo restante entre pessoas, ajustando centavos para a soma fechar. **Usar uma parte** preenche o valor, mas apenas **Registrar recebimento** confirma o pagamento. É possível combinar Pix, dinheiro, débito e crédito e registrar quem pagou.
+
+**Receber / dividir mesa** considera todas as comandas abertas do grupo e distribui o recebimento entre elas. O estorno exige motivo, preserva o histórico e desfaz todas as partes de um recebimento da mesa enquanto suas comandas estiverem abertas. O caixa deve devolver o dinheiro separadamente: não há processamento bancário. O fechamento exige saldo quitado e pedidos entregues ou cancelados.
+
+O banco existente recebe migrações aditivas automaticamente. Contas antigas já encerradas não recebem pagamentos fictícios; o histórico de recebimentos começa com os novos registros.
+
 ## Comandas individuais e anotação por texto
 
 Cada cliente informa o nome no primeiro pedido. Um identificador aleatório fica no localStorage do navegador para recuperar sua comanda aberta ao ler novamente um QR code. Limpar os dados do navegador, trocar de aparelho ou usar uma janela privada pode criar outra identidade. Nomes iguais não juntam contas. Após o fechamento, o próximo pedido abre outra comanda.
@@ -28,7 +42,7 @@ O SQLite é criado automaticamente em `data/restaurant.sqlite`, com 12 mesas, 9 
 1. Selecione uma mesa e abra **QR code da mesa → Testar cardápio do cliente**.
 2. Escolha produtos e envie o pedido. A quantidade disponível é reduzida imediatamente, de forma transacional.
 3. No painel **Pedidos**, avance de novo pedido para em preparo, pronto e entregue. O painel e o cliente atualizam a cada 5 segundos.
-4. Após receber o pagamento no caixa, use **Fechar conta**. Pedidos ainda pendentes impedem o fechamento. Não há processamento de pagamentos.
+4. Após receber no caixa, use **Receber / dividir**, registre o valor e encerre a comanda. Saldo pendente ou pedidos não concluídos impedem o fechamento. Não há processamento bancário.
 5. Cancelar um pedido não entregue devolve o estoque; não é possível cancelar duas vezes.
 
 ## Mesas e QR codes
@@ -60,4 +74,6 @@ Variáveis opcionais: `PORT` (padrão 3000), `DB_PATH` (caminho de outro SQLite)
 
 Uso local em rede de confiança: não há autenticação nem separação de permissões entre equipe e cliente na API administrativa. Não exponha este servidor à internet. Uma implantação real precisa de login/perfis, autorização, proteção contra abuso, HTTPS e backups. Não há integração fiscal, pagamento online ou controle de ingredientes. Os valores são armazenados em centavos; o estoque representa unidades prontas para venda.
 
-Interface responsiva em português. Fontes usam fallback local se o Google Fonts estiver indisponível; ícones e QR codes são servidos localmente.
+Interface responsiva em português. A fonte é a do sistema do aparelho; ícones e QR codes são servidos localmente. O tema não depende do Google Fonts.
+
+Se a porta 3000 estiver ocupada, confira se o sistema já está aberto. Para usar outra porta no Mac: `PORT=3001 npm start`; depois acesse `http://localhost:3001` e atualize o endereço dos QR codes nas configurações.
